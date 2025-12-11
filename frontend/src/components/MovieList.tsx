@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import type { Movie } from "../interfaces/Movie";
 import { useMovies } from "../hooks/useMovies";
 import { MovieItem } from "./MovieItem";
+import { MovieModal } from "./MovieModal";
 import "./MovieList.css"; 
 
 export const MovieList = () => {
   const [query, setQuery] = useState("");
   const { movies, loading, loadMovies, search } = useMovies();
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   useEffect(() => { loadMovies(); }, [loadMovies]);
 
@@ -31,9 +33,15 @@ export const MovieList = () => {
         <p className="loading">Loading...</p>
       ) : (
         <ul className="movie-list">
-          {movies.map((m) => <MovieItem key={m.id} movie={m} />)}
+          {movies.map((m) => (
+            <li key={m.id} onClick={() => setSelectedMovie(m)}>
+              <MovieItem movie={m} />
+            </li>
+          ))}
         </ul>
       )}
+
+      <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
     </div>
   );
 };
